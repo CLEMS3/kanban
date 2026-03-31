@@ -2,6 +2,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import type { TaskFormData } from "../../services/formValidationService";
+import { validateContent, validatePriority, validateDeadline } from "../../services/formValidationService";
 
 export type { TaskFormData } from "../../services/formValidationService";
 
@@ -27,7 +28,7 @@ const TaskForm = ({ onAddTask }: { onAddTask: (data: TaskFormData) => void }) =>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <input
-            {...register("content", { required: "Task content is required" })}
+            {...register("content", { validate: validateContent })}
             placeholder="Task Description"
             className="w-full p-2 rounded-lg bg-white/50 border border-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-500 text-gray-800"
           />
@@ -38,7 +39,7 @@ const TaskForm = ({ onAddTask }: { onAddTask: (data: TaskFormData) => void }) =>
 
         <div>
           <select
-            {...register("priority", { required: "Priority is required" })}
+            {...register("priority", { validate: validatePriority })}
             className="w-full p-2 rounded-lg bg-white/50 border border-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800"
           >
             <option value="">Select Priority</option>
@@ -54,15 +55,7 @@ const TaskForm = ({ onAddTask }: { onAddTask: (data: TaskFormData) => void }) =>
         <div>
           <input
             type="date"
-            {...register("deadline", {
-              required: "Deadline is required",
-              validate: (value) => {
-                const selectedDate = new Date(value);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return selectedDate >= today || "Deadline cannot be in the past";
-              },
-            })}
+            {...register("deadline", { validate: validateDeadline })}
             className="w-full p-2 rounded-lg bg-white/50 border border-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800"
           />
           {errors.deadline && (
