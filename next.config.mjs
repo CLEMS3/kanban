@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/kanban',
+  basePath: process.env.NODE_ENV === 'production' ? '/kanban' : '',
   images: {
     unoptimized: true,
   },
