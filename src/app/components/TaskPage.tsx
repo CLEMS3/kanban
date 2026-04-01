@@ -10,7 +10,7 @@ import {
 } from "@dnd-kit/core";
 import TaskColumn from "./TaskColumn";
 import TaskForm, { TaskFormData } from "./TaskForm";
-import { celebrate } from "../../services/confettiService";
+import { celebrate, celebrateIntense, celebrateSubtle } from "../../services/confettiService";
 import { handleDragEnd as performDragEnd, Task, TaskState } from "../../services/dragDropService";
 
 export type { Task } from "../../services/dragDropService";
@@ -43,12 +43,18 @@ const TaskPage = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { updatedTasks, movedToDone } = performDragEnd(event, tasks);
+    const { updatedTasks, completedTask } = performDragEnd(event, tasks);
     setTasks(updatedTasks);
 
     // Trigger celebration if task was moved to done
-    if (movedToDone) {
-      celebrate();
+    if (completedTask) {
+      if (completedTask.priority === "High") {
+        celebrateIntense();
+      } else if (completedTask.priority === "Low") {
+        celebrateSubtle();
+      } else {
+        celebrate();
+      }
     }
   };
 

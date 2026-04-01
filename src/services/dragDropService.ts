@@ -34,12 +34,12 @@ export const findContainer = (
 export const handleDragEnd = (
   event: DragEndEvent,
   tasks: TaskState
-): { updatedTasks: TaskState; movedToDone: boolean } => {
+): { updatedTasks: TaskState; completedTask?: Task } => {
   const { active, over } = event;
-  let movedToDone = false;
+  let completedTask: Task | undefined;
 
   if (!over) {
-    return { updatedTasks: tasks, movedToDone };
+    return { updatedTasks: tasks, completedTask };
   }
 
   const activeId = active.id as string;
@@ -49,7 +49,7 @@ export const handleDragEnd = (
   const overContainer = findContainer(overId, tasks) || (over.id as TaskContainer);
 
   if (!activeContainer || !overContainer) {
-    return { updatedTasks: tasks, movedToDone };
+    return { updatedTasks: tasks, completedTask };
   }
 
   // Handle reordering within the same column
@@ -61,7 +61,7 @@ export const handleDragEnd = (
       updatedTasks[activeContainer].findIndex(item => item.id === overId)
     );
     updatedTasks[activeContainer] = newItems;
-    return { updatedTasks, movedToDone };
+    return { updatedTasks, completedTask };
   }
 
   // Handle moving to a different container
@@ -79,9 +79,9 @@ export const handleDragEnd = (
 
   // Check if task was moved to done
   if (overContainer === "done") {
-    movedToDone = true;
+    completedTask = movedItem;
   }
 
-  return { updatedTasks, movedToDone };
+  return { updatedTasks, completedTask };
 };
 
